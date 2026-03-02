@@ -6,13 +6,13 @@ app = Flask(__name__)
 
 class DuckDuckGoTool:
     def ddg_search_web(self, query: str, max_results: int = 5):
+        """
+        Perform a web search using DuckDuckGo (DDGS v9.x)
+        """
         try:
             with DDGS() as ddgs:
-                results = ddgs.text(
-                    query,
-                    max_results=max_results,
-                    safesearch="moderate",
-                )
+                # ddgs.text() now returns a generator of dictionaries
+                results = ddgs.text(query, max_results=max_results)
                 return list(results)
         except Exception as e:
             print(f"Search error: {e}")
@@ -29,7 +29,6 @@ def search():
     tool = DuckDuckGoTool()
     results = tool.ddg_search_web(query, max_results)
 
-    # Simplify results for JSON
     simplified = [
         {
             "title": r.get("title", "No title"),
@@ -49,5 +48,4 @@ def home():
     """
 
 if __name__ == "__main__":
-    # Run server on port 5000
     app.run(host="0.0.0.0", port=5000)
